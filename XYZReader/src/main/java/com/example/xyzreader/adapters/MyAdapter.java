@@ -1,7 +1,6 @@
 package com.example.xyzreader.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
-import com.example.xyzreader.ui.ArticleListActivity;
 import com.example.xyzreader.ui.DynamicHeightNetworkImageView;
 import com.example.xyzreader.ui.ImageLoaderHelper;
 
@@ -88,10 +86,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             titleView = (TextView) view.findViewById(R.id.article_title);
             subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
         }
-    }
-
-    public ArticleClickListener getListener() {
-        return mListener;
     }
 
     public void setListener(ArticleClickListener mListener) {
