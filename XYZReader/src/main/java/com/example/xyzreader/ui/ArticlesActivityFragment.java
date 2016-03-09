@@ -1,75 +1,92 @@
 package com.example.xyzreader.ui;
 
-import android.app.LoaderManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.adapters.MyAdapter;
+import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.UpdaterService;
 
 /**
- * An activity representing a list of Articles. This activity has different presentations for
- * handset and tablet-size devices. On handsets, the activity presents a list of items, which when
- * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
- * activity presents a grid of items as cards.
+ * A placeholder fragment containing a simple view.
  */
-@Deprecated
-public class ArticleListActivity extends ActionBarActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class ArticlesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    //private Toolbar mToolbar;
+    private OnFragmentInteractionListener mListener;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
+    private boolean mIsRefreshing = false;
+
+    public ArticlesActivityFragment() {
+    }
+
+    public static ArticlesActivityFragment newInstance() {
+        return new ArticlesActivityFragment();
+    }
+
+    public interface OnFragmentInteractionListener {
+
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article_list);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
 
-        //mToolbar = (Toolbar) findViewById(R.id.toolbar);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.fragment_articles, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipe_refresh_layout);
 
-
-        //final View toolbarContainerView = findViewById(R.id.toolbar_container);
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
 
         if (savedInstanceState == null) {
             refresh();
         }
+
+        return contentView;
     }
 
     private void refresh() {
-        startService(new Intent(this, UpdaterService.class));
+        getActivity().startService(new Intent(getActivity(), UpdaterService.class));
     }
 
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
-        registerReceiver(mRefreshingReceiver,
-                new IntentFilter(UpdaterService.BROADCAST_ACTION_STATE_CHANGE));
+        getActivity().registerReceiver(mRefreshingReceiver, new IntentFilter(UpdaterService.BROADCAST_ACTION_STATE_CHANGE));
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
+        getActivity().unregisterReceiver(mRefreshingReceiver);
         super.onStop();
-        unregisterReceiver(mRefreshingReceiver);
     }
-
-    private boolean mIsRefreshing = false;
 
     private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
         @Override
@@ -86,14 +103,19 @@ public class ArticleListActivity extends ActionBarActivity implements
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        //return ArticleLoader.newAllArticlesInstance(this);
-        return null;
+        return ArticleLoader.newAllArticlesInstance(getContext());
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        MyAdapter adapter = new MyAdapter(cursor, this);
+        MyAdapter adapter = new MyAdapter(cursor, getContext());
         adapter.setListener(new MyAdapter.ArticleClickListener() {
             @Override
             public void onArticleClick(Uri uri) {
@@ -111,5 +133,4 @@ public class ArticleListActivity extends ActionBarActivity implements
     public void onLoaderReset(Loader<Cursor> loader) {
         mRecyclerView.setAdapter(null);
     }
-
 }

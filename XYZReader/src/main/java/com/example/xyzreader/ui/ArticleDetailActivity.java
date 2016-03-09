@@ -109,7 +109,8 @@ public class ArticleDetailActivity extends ActionBarActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return ArticleLoader.newAllArticlesInstance(this);
+        //return ArticleLoader.newAllArticlesInstance(this);
+        return null;
     }
 
     @Override
