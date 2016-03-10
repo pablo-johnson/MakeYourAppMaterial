@@ -1,4 +1,4 @@
-package com.example.xyzreader.ui;
+package com.example.xyzreader.ui.activities;
 
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;

@@ -1,4 +1,4 @@
-package com.example.xyzreader.ui;
+package com.example.xyzreader.ui.fragments;
 
 
 import android.content.BroadcastReceiver;
@@ -26,19 +26,18 @@ import com.example.xyzreader.data.UpdaterService;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ArticlesActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArticlesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private OnFragmentInteractionListener mListener;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
     private boolean mIsRefreshing = false;
 
-    public ArticlesActivityFragment() {
+    public ArticlesFragment() {
     }
 
-    public static ArticlesActivityFragment newInstance() {
-        return new ArticlesActivityFragment();
+    public static ArticlesFragment newInstance() {
+        return new ArticlesFragment();
     }
 
     public interface OnFragmentInteractionListener {
@@ -59,7 +58,6 @@ public class ArticlesActivityFragment extends Fragment implements LoaderManager.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_articles, container, false);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.swipe_refresh_layout);
 
         mRecyclerView = (RecyclerView) contentView.findViewById(R.id.recycler_view);
         getLoaderManager().initLoader(0, null, this);
@@ -93,14 +91,10 @@ public class ArticlesActivityFragment extends Fragment implements LoaderManager.
         public void onReceive(Context context, Intent intent) {
             if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
                 mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
-                updateRefreshingUI();
             }
         }
     };
 
-    private void updateRefreshingUI() {
-        mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
-    }
 
     @Override
     public void onDetach() {

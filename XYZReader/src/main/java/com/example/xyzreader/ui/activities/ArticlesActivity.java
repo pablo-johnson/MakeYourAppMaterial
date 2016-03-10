@@ -1,13 +1,13 @@
-package com.example.xyzreader.ui;
+package com.example.xyzreader.ui.activities;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.xyzreader.R;
+import com.example.xyzreader.ui.fragments.ArticlesFragment;
 
-public class ArticlesActivity extends AppCompatActivity implements ArticlesActivityFragment.OnFragmentInteractionListener {
+public class ArticlesActivity extends AppCompatActivity implements ArticlesFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,7 @@ public class ArticlesActivity extends AppCompatActivity implements ArticlesActiv
 
         if (getSupportFragmentManager().findFragmentById(R.id.fragment) == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment, ArticlesActivityFragment.newInstance(), "MovieGridFragmentTag")
+                    .replace(R.id.fragment, ArticlesFragment.newInstance(), "MovieGridFragmentTag")
                     .addToBackStack("MovieGridFragmentName")
                     .commit();
         }

@@ -5,11 +5,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.ImageVideoBitmapDecoder;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
@@ -31,7 +35,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mInflater = LayoutInflater.from(context);
     }
 
-    public interface ArticleClickListener{
+    public interface ArticleClickListener {
         void onArticleClick(Uri uri);
     }
 
@@ -62,12 +66,14 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 DateUtils.getRelativeTimeSpanString(
                         mCursor.getLong(ArticleLoader.Query.PUBLISHED_DATE),
                         System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                        DateUtils.FORMAT_ABBREV_ALL).toString()
-                        + " by "
-                        + mCursor.getString(ArticleLoader.Query.AUTHOR));
-        ((MyViewHolder) holder).thumbnailView.setImageUrl(mCursor.getString(ArticleLoader.Query.THUMB_URL),
-                ImageLoaderHelper.getInstance(mContext).getImageLoader());
-        ((MyViewHolder) holder).thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+                        DateUtils.FORMAT_ABBREV_ALL).toString());
+
+        ((MyViewHolder) holder).authorView.setText("by " + mCursor.getString(ArticleLoader.Query.AUTHOR));
+        Glide.with(mContext)
+                .load(mCursor.getString(ArticleLoader.Query.THUMB_URL))
+                .centerCrop()
+                .crossFade()
+                .into(((MyViewHolder) holder).thumbnailView);
     }
 
     @Override
@@ -76,15 +82,17 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     final class MyViewHolder extends RecyclerView.ViewHolder {
-        public DynamicHeightNetworkImageView thumbnailView;
+        private final TextView authorView;
+        public ImageView thumbnailView;
         public TextView titleView;
         public TextView subtitleView;
 
         public MyViewHolder(View view) {
             super(view);
-            thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
+            thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
             titleView = (TextView) view.findViewById(R.id.article_title);
             subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
+            authorView = (TextView) view.findViewById(R.id.article_author);
         }
     }
 
