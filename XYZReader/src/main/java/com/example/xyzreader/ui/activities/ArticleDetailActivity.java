@@ -33,7 +33,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class ArticleDetailActivity extends AppCompatActivity
             public void onClick(View view) {
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(ArticleDetailActivity.this)
                         .setType("text/plain")
-                        .setText("Some sample text")
+                        .setText(getString(R.string.shareLabel) + mCursor.getString(ArticleLoader.Query.TITLE))
                         .getIntent(), getString(R.string.action_share)));
             }
         });
@@ -83,7 +82,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void setUpToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             ViewCompat.setElevation(toolbar, 0);
             setSupportActionBar(toolbar);
