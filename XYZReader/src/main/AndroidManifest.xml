@@ -15,12 +15,9 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Bacon">
         <activity
-            android:name=".ui.activities.ArticleListActivity"
-            android:label="@string/app_name">
-        </activity>
-        <activity
             android:name=".ui.activities.ArticleDetailActivity"
-            android:parentActivityName=".ui.activities.ArticleListActivity">
+            android:parentActivityName=".ui.activities.ArticlesActivity"
+            android:theme="@style/Theme.Bacon.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -31,7 +28,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.ArticleListActivity" />
+                android:value=".ui.activities.ArticlesActivity" />
         </activity>
 
         <service

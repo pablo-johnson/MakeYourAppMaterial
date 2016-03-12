@@ -95,7 +95,6 @@ public class ArticlesFragment extends Fragment implements LoaderManager.LoaderCa
         }
     };
 
-
     @Override
     public void onDetach() {
         super.onDetach();
